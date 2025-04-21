@@ -52,14 +52,14 @@ export class RemotePackage extends Package implements IRemotePackage {
         await Filesystem.deleteFile({ directory: Directory.Data, path: file });
       }
 
-      const downloadedFile = await Http.get({
-        url: this.downloadUrl,
-        method: "GET",
-        responseType: "blob"
-      });
+      console.log('Before download');
+
+      const downloadedFile = await fetch(this.downloadUrl);
+
+      console.log('After download', downloadedFile);
 
       await Filesystem.writeFile({
-        data: downloadedFile.data,
+        data: downloadedFile.body,
         path: file,
         directory: Directory.Data,
       })
