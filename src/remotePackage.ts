@@ -53,12 +53,18 @@ export class RemotePackage extends Package implements IRemotePackage {
 
       console.log('Before download');
 
+      const downloadedFile = await fetch(this.downloadUrl);
+
+      console.log('After download', downloadedFile);
+      console.log('Before download');
+
       const downloadedFile = await fetch(this.downloadUrl)
       const fileAsBlob = await downloadedFile.blob();
 
       console.log('After download', downloadedFile);
 
       await Filesystem.writeFile({
+        data: downloadedFile.body,
         data: fileAsBlob,
         path: file,
         directory: Directory.Data,
