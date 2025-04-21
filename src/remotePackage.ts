@@ -28,11 +28,13 @@ export class RemotePackage extends Package implements IRemotePackage {
   public async download(downloadProgress?: SuccessCallback<DownloadProgress>): Promise<ILocalPackage> {
     CodePushUtil.logMessage("Downloading update");
     if (!this.downloadUrl) {
+      CodePushUtil.logMessage("BLLALALALALAL update");
       CodePushUtil.throwError(new Error("The remote package does not contain a download URL."));
     }
 
     this.isDownloading = true;
 
+    CodePushUtil.logMessage("Filesystem.WTF");
     console.log('Filesystem.WTF');
 
     const file = LocalPackage.DownloadDir + "/" + LocalPackage.PackageUpdateFileName;
@@ -40,9 +42,11 @@ export class RemotePackage extends Package implements IRemotePackage {
 
     try {
       // create directory if not exists
+      CodePushUtil.logMessage("Before FileUtil.directoryExists");
       console.log('Before FileUtil.directoryExists');
       if (!(await FileUtil.directoryExists(Directory.Data, LocalPackage.DownloadDir))) {
         console.log('Filesystem.mkdir');
+        CodePushUtil.logMessage("Filesystem.mkdir");
         await Filesystem.mkdir({
           path: LocalPackage.DownloadDir,
           directory: Directory.Data,
@@ -51,6 +55,7 @@ export class RemotePackage extends Package implements IRemotePackage {
       }
 
       console.log('Before FileUtil.fileExists');
+      CodePushUtil.logMessage("Before FileUtil.fileExists");
 
       // delete file if it exists
       if (await FileUtil.fileExists(Directory.Data, file)) {
@@ -58,26 +63,25 @@ export class RemotePackage extends Package implements IRemotePackage {
       }
 
       console.log('Before download');
-
-      const downloadedFile = await fetch(this.downloadUrl);
-
-      console.log('After download', downloadedFile);
-      console.log('Before download');
+      CodePushUtil.logMessage("Before download");
 
       const downloadedFile = await fetch(this.downloadUrl)
       const fileAsBlob = await downloadedFile.blob();
 
+
+      CodePushUtil.logMessage("After download");
       console.log('After download', downloadedFile);
 
       await Filesystem.writeFile({
-        data: downloadedFile.body,
         data: fileAsBlob,
         path: file,
         directory: Directory.Data,
       })
+      CodePushUtil.logMessage("After Filesystem.writeFile");
     } catch (e) {
       CodePushUtil.throwError(new Error("An error occured while downloading the package. " + (e && e.message) ? e.message : ""));
     } finally {
+      CodePushUtil.logMessage("fdfsdFEQWREWR");
       this.isDownloading = false;
     }
 
