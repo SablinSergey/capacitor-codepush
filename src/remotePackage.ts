@@ -33,18 +33,24 @@ export class RemotePackage extends Package implements IRemotePackage {
 
     this.isDownloading = true;
 
+    console.log('Filesystem.WTF');
+
     const file = LocalPackage.DownloadDir + "/" + LocalPackage.PackageUpdateFileName;
     const fullPath = await FileUtil.getUri(Directory.Data, file);
 
     try {
       // create directory if not exists
+      console.log('Before FileUtil.directoryExists');
       if (!(await FileUtil.directoryExists(Directory.Data, LocalPackage.DownloadDir))) {
+        console.log('Filesystem.mkdir');
         await Filesystem.mkdir({
           path: LocalPackage.DownloadDir,
           directory: Directory.Data,
           recursive: true,
         });
       }
+
+      console.log('Before FileUtil.fileExists');
 
       // delete file if it exists
       if (await FileUtil.fileExists(Directory.Data, file)) {
