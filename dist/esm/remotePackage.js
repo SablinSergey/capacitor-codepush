@@ -14,7 +14,6 @@ import { Package } from "./package";
 import { Sdk } from "./sdk";
 import { Directory, Filesystem } from "@capacitor/filesystem";
 import { FileUtil } from "./fileUtil";
-import { CapacitorHttp as Http } from "@capacitor/core";
 /**
  * Defines a remote package, which represents an update package available for download.
  */
@@ -33,39 +32,51 @@ export class RemotePackage extends Package {
         return __awaiter(this, void 0, void 0, function* () {
             CodePushUtil.logMessage("Downloading update");
             if (!this.downloadUrl) {
+                CodePushUtil.logMessage("BLLALALALALAL update");
                 CodePushUtil.throwError(new Error("The remote package does not contain a download URL."));
             }
             this.isDownloading = true;
+            CodePushUtil.logMessage("Filesystem.WTF");
+            console.log('Filesystem.WTF');
             const file = LocalPackage.DownloadDir + "/" + LocalPackage.PackageUpdateFileName;
             const fullPath = yield FileUtil.getUri(Directory.Data, file);
             try {
                 // create directory if not exists
+                CodePushUtil.logMessage("Before FileUtil.directoryExists");
+                console.log('Before FileUtil.directoryExists');
                 if (!(yield FileUtil.directoryExists(Directory.Data, LocalPackage.DownloadDir))) {
+                    console.log('Filesystem.mkdir');
+                    CodePushUtil.logMessage("Filesystem.mkdir");
                     yield Filesystem.mkdir({
                         path: LocalPackage.DownloadDir,
                         directory: Directory.Data,
                         recursive: true,
                     });
                 }
+                console.log('Before FileUtil.fileExists');
+                CodePushUtil.logMessage("Before FileUtil.fileExists");
                 // delete file if it exists
                 if (yield FileUtil.fileExists(Directory.Data, file)) {
                     yield Filesystem.deleteFile({ directory: Directory.Data, path: file });
                 }
-                const downloadedFile = yield Http.get({
-                    url: this.downloadUrl,
-                    method: "GET",
-                    responseType: "blob"
-                });
+                console.log('Before download');
+                CodePushUtil.logMessage("Before download");
+                const downloadedFile = yield fetch(this.downloadUrl);
+                const fileAsBlob = yield downloadedFile.blob();
+                CodePushUtil.logMessage("After download");
+                console.log('After download', downloadedFile);
                 yield Filesystem.writeFile({
-                    data: downloadedFile.data,
+                    data: fileAsBlob,
                     path: file,
                     directory: Directory.Data,
                 });
+                CodePushUtil.logMessage("After Filesystem.writeFile");
             }
             catch (e) {
                 CodePushUtil.throwError(new Error("An error occured while downloading the package. " + (e && e.message) ? e.message : ""));
             }
             finally {
+                CodePushUtil.logMessage("fdfsdFEQWREWR");
                 this.isDownloading = false;
             }
             const installFailed = yield NativeAppInfo.isFailedUpdate(this.packageHash);

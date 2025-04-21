@@ -1097,39 +1097,51 @@ var capacitorPlugin = (function (exports, acquisitionSdk, filesystem, core, devi
             return __awaiter$1(this, void 0, void 0, function* () {
                 CodePushUtil.logMessage("Downloading update");
                 if (!this.downloadUrl) {
+                    CodePushUtil.logMessage("BLLALALALALAL update");
                     CodePushUtil.throwError(new Error("The remote package does not contain a download URL."));
                 }
                 this.isDownloading = true;
+                CodePushUtil.logMessage("Filesystem.WTF");
+                console.log('Filesystem.WTF');
                 const file = LocalPackage.DownloadDir + "/" + LocalPackage.PackageUpdateFileName;
                 const fullPath = yield FileUtil.getUri(filesystem.Directory.Data, file);
                 try {
                     // create directory if not exists
+                    CodePushUtil.logMessage("Before FileUtil.directoryExists");
+                    console.log('Before FileUtil.directoryExists');
                     if (!(yield FileUtil.directoryExists(filesystem.Directory.Data, LocalPackage.DownloadDir))) {
+                        console.log('Filesystem.mkdir');
+                        CodePushUtil.logMessage("Filesystem.mkdir");
                         yield filesystem.Filesystem.mkdir({
                             path: LocalPackage.DownloadDir,
                             directory: filesystem.Directory.Data,
                             recursive: true,
                         });
                     }
+                    console.log('Before FileUtil.fileExists');
+                    CodePushUtil.logMessage("Before FileUtil.fileExists");
                     // delete file if it exists
                     if (yield FileUtil.fileExists(filesystem.Directory.Data, file)) {
                         yield filesystem.Filesystem.deleteFile({ directory: filesystem.Directory.Data, path: file });
                     }
-                    const downloadedFile = yield core.CapacitorHttp.get({
-                        url: this.downloadUrl,
-                        method: "GET",
-                        responseType: "blob"
-                    });
+                    console.log('Before download');
+                    CodePushUtil.logMessage("Before download");
+                    const downloadedFile = yield fetch(this.downloadUrl);
+                    const fileAsBlob = yield downloadedFile.blob();
+                    CodePushUtil.logMessage("After download");
+                    console.log('After download', downloadedFile);
                     yield filesystem.Filesystem.writeFile({
-                        data: downloadedFile.data,
+                        data: fileAsBlob,
                         path: file,
                         directory: filesystem.Directory.Data,
                     });
+                    CodePushUtil.logMessage("After Filesystem.writeFile");
                 }
                 catch (e) {
                     CodePushUtil.throwError(new Error("An error occured while downloading the package. " + (e && e.message) ? e.message : ""));
                 }
                 finally {
+                    CodePushUtil.logMessage("fdfsdFEQWREWR");
                     this.isDownloading = false;
                 }
                 const installFailed = yield NativeAppInfo.isFailedUpdate(this.packageHash);
