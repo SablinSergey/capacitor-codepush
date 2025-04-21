@@ -6,7 +6,6 @@ import { DownloadProgress, ILocalPackage, IRemotePackage, Package } from "./pack
 import { Sdk } from "./sdk";
 import { Directory, Filesystem } from "@capacitor/filesystem";
 import { FileUtil } from "./fileUtil";
-import { CapacitorHttp as Http } from "@capacitor/core";
 
 /**
  * Defines a remote package, which represents an update package available for download.
@@ -52,14 +51,15 @@ export class RemotePackage extends Package implements IRemotePackage {
         await Filesystem.deleteFile({ directory: Directory.Data, path: file });
       }
 
-      const downloadedFile = await Http.get({
-        url: this.downloadUrl,
-        method: "GET",
-        responseType: "blob"
-      });
+      console.log('Before download');
+
+      const downloadedFile = await fetch(this.downloadUrl)
+      const fileAsBlob = await downloadedFile.blob();
+
+      console.log('After download', downloadedFile);
 
       await Filesystem.writeFile({
-        data: downloadedFile.data,
+        data: fileAsBlob,
         path: file,
         directory: Directory.Data,
       })
