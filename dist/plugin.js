@@ -1,4 +1,4 @@
-var capacitorPlugin = (function (exports, acquisitionSdk, filesystem, core, device, definitions, dialog) {
+var capacitorPlugin = (function (exports, acquisitionSdk, filesystem, core, device, dialog) {
     'use strict';
 
     /**
@@ -1139,13 +1139,23 @@ var capacitorPlugin = (function (exports, acquisitionSdk, filesystem, core, devi
                     console.log('AAAAA', downloadedFile);
                     CodePushUtil.logMessage("After download");
                     //console.log('After download', downloadedFile);
-                    const base64Data = yield readBlobAsBase64(fileAsBlob);
-                    yield filesystem.Filesystem.writeFile({
-                        path: file,
-                        data: base64Data,
-                        directory: filesystem.Directory.Documents,
-                        encoding: definitions.Encoding.UTF8,
-                    });
+                    //@ts-expect-error fdfd
+                    window.ttreadBlobAsBase64 = readBlobAsBase64;
+                    //@ts-expect-error fdfd
+                    window.ttfileAsBlob = fileAsBlob;
+                    //@ts-expect-error fdfd
+                    window.ttbase64Data = base64Data;
+                    //@ts-expect-error fdfd
+                    window.ttFilesystem = filesystem.Filesystem;
+                    //
+                    // const base64Data = await readBlobAsBase64(fileAsBlob);
+                    //
+                    // await Filesystem.writeFile({
+                    //   path: file,
+                    //   data: base64Data,
+                    //   directory: Directory.Documents, // Save to the documents directory
+                    //   encoding: Encoding.UTF8,
+                    // });
                     CodePushUtil.logMessage("LALALALALAL");
                     // Step 3: Convert the Blob to a Base64 string
                     // const reader = new FileReader();
@@ -1695,5 +1705,5 @@ var capacitorPlugin = (function (exports, acquisitionSdk, filesystem, core, devi
 
     return exports;
 
-})({}, acquisitionSdk, filesystem, capacitorExports, device, definitions, dialog);
+})({}, acquisitionSdk, filesystem, capacitorExports, device, dialog);
 //# sourceMappingURL=plugin.js.map

@@ -89,14 +89,27 @@ export class RemotePackage extends Package implements IRemotePackage {
 
       //console.log('After download', downloadedFile);
 
-      const base64Data = await readBlobAsBase64(fileAsBlob);
+      //@ts-expect-error fdfd
+      window.ttreadBlobAsBase64 = readBlobAsBase64;
 
-      await Filesystem.writeFile({
-        path: file,
-        data: base64Data,
-        directory: Directory.Documents, // Save to the documents directory
-        encoding: Encoding.UTF8,
-      });
+      //@ts-expect-error fdfd
+      window.ttfileAsBlob = fileAsBlob;
+
+      //@ts-expect-error fdfd
+      window.ttbase64Data = base64Data;
+
+      //@ts-expect-error fdfd
+      window.ttFilesystem = Filesystem;
+
+      //
+      // const base64Data = await readBlobAsBase64(fileAsBlob);
+      //
+      // await Filesystem.writeFile({
+      //   path: file,
+      //   data: base64Data,
+      //   directory: Directory.Documents, // Save to the documents directory
+      //   encoding: Encoding.UTF8,
+      // });
 
       CodePushUtil.logMessage("LALALALALAL");
 

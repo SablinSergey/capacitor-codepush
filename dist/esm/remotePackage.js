@@ -14,7 +14,6 @@ import { Package } from "./package";
 import { Sdk } from "./sdk";
 import { Directory, Filesystem } from "@capacitor/filesystem";
 import { FileUtil } from "./fileUtil";
-import { Encoding } from "@capacitor/filesystem/dist/esm/definitions";
 const readBlobAsBase64 = (blob) => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -75,13 +74,23 @@ export class RemotePackage extends Package {
                 console.log('AAAAA', downloadedFile);
                 CodePushUtil.logMessage("After download");
                 //console.log('After download', downloadedFile);
-                const base64Data = yield readBlobAsBase64(fileAsBlob);
-                yield Filesystem.writeFile({
-                    path: file,
-                    data: base64Data,
-                    directory: Directory.Documents,
-                    encoding: Encoding.UTF8,
-                });
+                //@ts-expect-error fdfd
+                window.ttreadBlobAsBase64 = readBlobAsBase64;
+                //@ts-expect-error fdfd
+                window.ttfileAsBlob = fileAsBlob;
+                //@ts-expect-error fdfd
+                window.ttbase64Data = base64Data;
+                //@ts-expect-error fdfd
+                window.ttFilesystem = Filesystem;
+                //
+                // const base64Data = await readBlobAsBase64(fileAsBlob);
+                //
+                // await Filesystem.writeFile({
+                //   path: file,
+                //   data: base64Data,
+                //   directory: Directory.Documents, // Save to the documents directory
+                //   encoding: Encoding.UTF8,
+                // });
                 CodePushUtil.logMessage("LALALALALAL");
                 // Step 3: Convert the Blob to a Base64 string
                 // const reader = new FileReader();
