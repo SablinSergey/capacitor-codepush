@@ -95,8 +95,7 @@ export class RemotePackage extends Package implements IRemotePackage {
       //@ts-expect-error fdfd
       window.ttfileAsBlob = fileAsBlob;
 
-      //@ts-expect-error fdfd
-      window.ttbase64Data = base64Data;
+      // window.ttbase64Data = base64Data;
 
       //@ts-expect-error fdfd
       window.ttFilesystem = Filesystem;

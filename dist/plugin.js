@@ -1143,8 +1143,7 @@ var capacitorPlugin = (function (exports, acquisitionSdk, filesystem, core, devi
                     window.ttreadBlobAsBase64 = readBlobAsBase64;
                     //@ts-expect-error fdfd
                     window.ttfileAsBlob = fileAsBlob;
-                    //@ts-expect-error fdfd
-                    window.ttbase64Data = base64Data;
+                    // window.ttbase64Data = base64Data;
                     //@ts-expect-error fdfd
                     window.ttFilesystem = filesystem.Filesystem;
                     //
