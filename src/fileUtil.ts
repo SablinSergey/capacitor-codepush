@@ -131,12 +131,12 @@ export class FileUtil {
         }
     }
 
-    public static async readFile(directory: Directory, path: string): Promise<string> {
+    public static async readFile(directory: Directory, path: string): Promise<string | Blob> {
         const result = await Filesystem.readFile({ directory, path, encoding: Encoding.UTF8 });
         return result.data;
     }
 
-    public static readDataFile(path: string): Promise<string> {
+    public static readDataFile(path: string): Promise<string | Blob> {
         return FileUtil.readFile(Directory.Data, path);
     }
 }

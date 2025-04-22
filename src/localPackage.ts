@@ -208,7 +208,7 @@ export class LocalPackage extends Package implements ILocalPackage {
 
         try {
             const signature = await FileUtil.readFile(Directory.Data, filePath);
-            callback(null, signature);
+            callback(null, signature as string);
         } catch (error) {
             // error reading signature file from bundle
             callback(error, null);
@@ -392,7 +392,7 @@ export class LocalPackage extends Package implements ILocalPackage {
 
             /* delete files mentioned in the manifest */
             const content = await FileUtil.readFile(diffManifest.directory, diffManifest.path);
-            manifest = JSON.parse(content);
+            manifest = JSON.parse(content as string);
             await FileUtil.deleteEntriesFromDataDirectory(newPackageLocation, manifest.deletedFiles);
         } catch (error) {
             throw new Error("Cannot perform diff-update.");
@@ -452,7 +452,7 @@ export class LocalPackage extends Package implements ILocalPackage {
 
         try {
             const content = await FileUtil.readDataFile(LocalPackage.RootDir + "/" + packageFile);
-            const packageInfo: IPackageInfoMetadata = JSON.parse(content);
+            const packageInfo: IPackageInfoMetadata = JSON.parse(content as string);
             LocalPackage.getLocalPackageFromMetadata(packageInfo).then(packageSuccess, packageError);
         } catch (e) {
             handleError(e);
