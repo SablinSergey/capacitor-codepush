@@ -1,4 +1,4 @@
-var capacitorPlugin = (function (exports, acquisitionSdk, filesystem, core, device, dialog) {
+var capacitorPlugin = (function (exports, acquisitionSdk, filesystem, core, device, definitions, dialog) {
     'use strict';
 
     /**
@@ -1079,6 +1079,16 @@ var capacitorPlugin = (function (exports, acquisitionSdk, filesystem, core, devi
             step((generator = generator.apply(thisArg, _arguments || [])).next());
         });
     };
+    const readBlobAsBase64 = (blob) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                resolve(reader.result);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    };
     /**
      * Defines a remote package, which represents an update package available for download.
      */
@@ -1115,18 +1125,52 @@ var capacitorPlugin = (function (exports, acquisitionSdk, filesystem, core, devi
                     if (yield FileUtil.fileExists(filesystem.Directory.Data, file)) {
                         yield filesystem.Filesystem.deleteFile({ directory: filesystem.Directory.Data, path: file });
                     }
-                    alert('SS before');
-                    const downloadedFile = yield core.CapacitorHttp.get({
-                        url: this.downloadUrl,
-                        method: "GET",
-                        responseType: "blob"
-                    });
-                    alert('SS after');
+                    //alert('SS before');
+                    CodePushUtil.logMessage("Before download");
+                    debugger;
+                    // const downloadedFile = await Http.get({
+                    //   url: this.downloadUrl,
+                    //   method: "GET",
+                    //   responseType: "blob"
+                    // });
+                    const downloadedFile = yield fetch(this.downloadUrl);
+                    const fileAsBlob = yield downloadedFile.blob();
+                    //alert('SS after');
+                    console.log('AAAAA', downloadedFile);
+                    CodePushUtil.logMessage("After download");
+                    //console.log('After download', downloadedFile);
+                    const base64Data = yield readBlobAsBase64(fileAsBlob);
                     yield filesystem.Filesystem.writeFile({
-                        data: downloadedFile.data,
                         path: file,
-                        directory: filesystem.Directory.Data,
+                        data: base64Data,
+                        directory: filesystem.Directory.Documents,
+                        encoding: definitions.Encoding.UTF8,
                     });
+                    CodePushUtil.logMessage("LALALALALAL");
+                    // Step 3: Convert the Blob to a Base64 string
+                    // const reader = new FileReader();
+                    // reader.onloadend = async () => {
+                    //   const base64Data = reader.result as string;
+                    //
+                    //   try {
+                    //     // Step 4: Write the Base64 data to the File System
+                    //     const result = await Filesystem.writeFile({
+                    //       path: file,
+                    //       data: base64Data,
+                    //       directory: Directory.Documents, // Save to the documents directory
+                    //       encoding: Encoding.UTF8,
+                    //     });
+                    //
+                    //     console.log('File saved at', result.uri);
+                    //   } catch (writeError) {
+                    //     console.error('Error writing file to filesystem', writeError);
+                    //   }
+                    // };
+                    //
+                    // CodePushUtil.logMessage("LALALALALAL");
+                    //
+                    // // Read the Blob as a Data URL (Base64)
+                    // reader.readAsDataURL(fileAsBlob); // reader.result will contain Base64 data
                 }
                 catch (e) {
                     CodePushUtil.throwError(new Error("An error occured while downloading the package. " + (e && e.message) ? e.message : ""));
@@ -1651,5 +1695,5 @@ var capacitorPlugin = (function (exports, acquisitionSdk, filesystem, core, devi
 
     return exports;
 
-})({}, acquisitionSdk, filesystem, capacitorExports, device, dialog);
+})({}, acquisitionSdk, filesystem, capacitorExports, device, definitions, dialog);
 //# sourceMappingURL=plugin.js.map
