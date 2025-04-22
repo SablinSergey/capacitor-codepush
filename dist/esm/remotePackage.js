@@ -51,11 +51,13 @@ export class RemotePackage extends Package {
                 if (yield FileUtil.fileExists(Directory.Data, file)) {
                     yield Filesystem.deleteFile({ directory: Directory.Data, path: file });
                 }
+                alert('SS before');
                 const downloadedFile = yield Http.get({
                     url: this.downloadUrl,
                     method: "GET",
                     responseType: "blob"
                 });
+                alert('SS after');
                 yield Filesystem.writeFile({
                     data: downloadedFile.data,
                     path: file,

@@ -1115,11 +1115,13 @@ var capacitorPlugin = (function (exports, acquisitionSdk, filesystem, core, devi
                     if (yield FileUtil.fileExists(filesystem.Directory.Data, file)) {
                         yield filesystem.Filesystem.deleteFile({ directory: filesystem.Directory.Data, path: file });
                     }
+                    alert('SS before');
                     const downloadedFile = yield core.CapacitorHttp.get({
                         url: this.downloadUrl,
                         method: "GET",
                         responseType: "blob"
                     });
+                    alert('SS after');
                     yield filesystem.Filesystem.writeFile({
                         data: downloadedFile.data,
                         path: file,
